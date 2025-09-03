@@ -21,7 +21,7 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     env: 
-      HOST_ENV: ${{ github.event.inputs.environment == 'prod' && '3.237.75.186' || '44.200.252.116' }}
+      HOST_ENV: ${{ github.event.inputs.environment == 'prod' && '3.83.121.80' || '3.93.232.240' }}
       SSH_USER: "root"
       SSH_PORT: 22
     steps:
