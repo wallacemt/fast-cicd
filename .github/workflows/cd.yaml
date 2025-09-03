@@ -39,4 +39,6 @@ jobs:
           script: |
             sudo mkdir -p /todo-fast
             sudo docker service rm fast-ci-todo | true
-            sudo docker service create --name fast-ci-todo --replicas=3 -p 80:3000 \ --mount type=bind,source=/todo-fast,destination=/etc/todos \ wallacestm/fast-todo:${{ github.event.inputs.imageTag }}
+            sudo docker service create --name fast-ci-todo --replicas=3 -p 80:3000 \
+            --mount type=bind,source=/todo-fast,destination=/etc/todos \
+            wallacestm/fast-todo:${{ github.event.inputs.imageTag }}
