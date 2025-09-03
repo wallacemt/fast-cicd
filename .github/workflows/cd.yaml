@@ -1,8 +1,8 @@
 name: fast-cd
 
-on: 
+on:
   workflow_dispatch:
-    input:
+    inputs:
       environment:
         type: choice
         description: 'Ambiente de deployment'
@@ -14,6 +14,7 @@ on:
         required: true
         description: 'Deployment image tag'
         default: 'latest'
+
 
 
 jobs:
