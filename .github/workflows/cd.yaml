@@ -1,7 +1,7 @@
 name: fast-cd
 
 on: 
-  workflow-dispatch:
+  workflow_dispatch:
     input:
       environment:
         type: choice
