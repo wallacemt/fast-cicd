@@ -7,13 +7,13 @@ on:
         type: choice
         description: 'Ambiente de deployment'
         required: true
-        options:
-          - dev
-          - prod
-        imageTag:
-          required: true
-          description: 'Tag da imagem a ser implantada'
-          default: 'latest' 
+        options: 
+        - dev
+        - prod
+      imageTag:
+        required: true
+        description: 'Deployment image tag'
+        default: 'latest'
 
 
 jobs:
