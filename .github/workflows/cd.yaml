@@ -1,0 +1,41 @@
+name: fast-cd
+
+on: 
+  workflow-dispatch:
+    input:
+      environment:
+        type: choice
+        description: 'Ambiente de deployment'
+        required: true
+        options:
+          - dev
+          - prod
+        imageTag:
+          required: true
+          description: 'Tag da imagem a ser implantada'
+          default: 'latest' 
+
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    env: 
+      HOST_ENV: ${{ github.event.inputs.environment == 'prod' && '3.237.75.186' || '44.200.252.116' }}
+      SSH_USER: "root"
+      SSH_PORT: 22
+    steps:
+      - run: |
+          echo "Ambiente de deployment: ${{github.event.inputs.environment}}"
+          echo "Tag da imagem: ${{github.event.inputs.imageTag}}"
+
+      - name: Deployment Service
+        uses: appleboy/ssh-action@v1.0.3
+        with: 
+          host: "${{env.HOST_ENV}}"
+          username: "${{env.SSH_USER}}"
+          key: "${{secrets.SSH_KEY}}"
+          port: "${{env.SSH_PORT}}"
+          script: |
+            sudo mkdir -p /todo-fast
+            sudo docker service rm fast-ci-todo | true
+            sudo docker service create --name fast-ci-todo --replicas=3 -p 80:3000 \ --mount type=bind,source=/todo-fast,destination=/etc/todos \ wallacestm/fast-todo:${{ github.event.inputs.imageTag }}
