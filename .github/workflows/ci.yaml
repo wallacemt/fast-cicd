@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - 'main'
+    tags:
+      - 'v*'
+  pull_request:
+     branches:
+        - 'main'
 
 jobs:   
   docker:
@@ -20,8 +25,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Extract metada (tags and labels) for Docker
+        id: tag
+        uses: docker/metadata-action@v5
+        with:
+          images: wallacestm/fast-todo
+          tags: |
+            # Se o trigger foi uma tag (ex: v1.0.0), a imagem Docker terá a tag 'v1.0.0'
+            type=ref,event=tag
+            # Se o trigger foi um push na branch 'main', a imagem terá duas tags: 'latest' e o hash do commit (ex: f1a2b3c)
+            type=raw,value=latest,enable={{is_default_branch}}
+            # Se o trigger foi um pull request, a imagem terá a tag 'PR-numero-do-pr'
+            type=ref,event=pr,prefix=PR-
+            type=sha
+      - name: Build and push Docker Image
         uses: docker/build-push-action@v5
         with: 
           push: true
-          tags: wallacestm/fast-todo:latest
+          tags: ${{ steps.tag.outputs.tags }}
+          labels: ${{ steps.tag.outputs.labels }}
