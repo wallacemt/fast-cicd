@@ -7,13 +7,8 @@ on:
 
 jobs:   
   docker:
-    runs-on: unbuntu-latest
-    needs: 
-      - lint
-      - grype
-      - bearer
-      - sonarcloud
-      - tests
+    name: Docker build and publish
+    runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3      
