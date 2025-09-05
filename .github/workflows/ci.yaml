@@ -61,7 +61,17 @@ jobs:
           node-version: '18.x'
       - run: npm run ci
       - run: sudo npm test
-
+  sonarcloud:
+    name: sonarcloud
+    runs-on: unbuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master 
+        env: 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   docker:
     name: Docker build and publish
     runs-on: ubuntu-latest
