@@ -123,3 +123,17 @@ jobs:
             **Tags publicadas:**
             ```
             ${{ steps.format_tags.outputs.comment_body }}
+  deployment:
+    name: Deployment trigger
+    runs-on: ubuntu-latest
+    needs: 
+      - docker
+    steps:
+      - name: Disparar deployment em dev
+        uses: benc-uk/workflow-dispatch@v1
+        env:
+          IMAGE_TAG: ${{ github.event.number == 0 && 'latest' || format('PR-{0}', github.event.number) }}
+        with: 
+          workflow: cd.yaml
+          inputs: '{"environment": "dev", "imageTag": "${{ env.IMAGE_TAG }}"}'
+          token: ${{ secrets.TOKEN_GITHUB }}
