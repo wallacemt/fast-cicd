@@ -105,21 +105,21 @@ jobs:
         if: github.event_name == 'pull_request'
         id: format_tags
         run: | 
-          # Pega o output de tags e troca virgulas por quebras ded linha
-          TAGS_BODY=$(echo "${{steps.tag.outputs.tags}}" | sed 's/./\n/g')
-          echo "comment_body<<EDF" >> $GITHUB_OUTPUT
+          # Pega o output de tags e troca virgulas por quebras de linha
+          TAGS_BODY=$(echo "${{ steps.tag.outputs.tags }}" | sed 's/,/\n/g')
+          echo "comment_body<<EOF" >> $GITHUB_OUTPUT
           echo "$TAGS_BODY" >> $GITHUB_OUTPUT
-          echo "EDF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       
       - name: Create or update PR comment
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN_GITHUB }}
           comment-identifier: "docker-publish-tags-comment"
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-           ## ✅ Imagem publicada com sucesso!
-           **TAGS Publicadas**
-           ´´´
-           s{{ steps.format_tags.outputs.comment_body }}
+            ## ✅ Imagem publicada com sucesso!
+            **Tags publicadas:**
+            ```
+            ${{ steps.format_tags.outputs.comment_body }}
